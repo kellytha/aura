@@ -4,10 +4,15 @@
   "version": "1.0.0",
   "dependencies": {
     "@clerk/expo": "^4.10.1",
+    "@prisma/extension-accelerate": "^3.0.1",
+    "@supabase/supabase-js": "^2.117.3",
     "@tanstack/react-query": "^5.104.1",
     "axios": "^1.20.0",
     "expo": "~57.0.27",
+    "expo-auth-session": "~57.0.14",
+    "expo-clipboard": "~57.0.2",
     "expo-constants": "~57.0.21",
+    "expo-crypto": "~57.0.3",
     "expo-font": "~57.0.4",
     "expo-linking": "~57.0.12",
     "expo-router": "~57.0.25",
@@ -31,13 +36,17 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~57.0.2",
     "typescript": "~6.0.3"
   },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "postinstall": "prisma skills sync || exit 0",
+    "lint": "expo lint"
   },
   "private": true
 }
