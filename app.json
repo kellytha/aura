@@ -8,14 +8,19 @@
     "scheme": "mobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "co.za.aura.fintech",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#06261E",
         "foregroundImage": "./assets/images/aura-icon.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "co.za.aura.fintech"
     },
     "web": {
       "bundler": "metro",
@@ -36,6 +41,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "7c927663-15db-4848-be11-3cf954b88cf7"
+      }
     }
   }
 }

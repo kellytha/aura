@@ -23,13 +23,20 @@ function formatAmount(amount: number) {
   return `R ${amount.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
+function parseAmountToCents(value: string) {
+  if (!/^\d+(?:\.\d{1,2})?$/.test(value)) return null;
+
+  const [whole, fraction = ""] = value.split(".");
+  const cents = Number(whole) * 100 + Number(fraction.padEnd(2, "0"));
+  return Number.isSafeInteger(cents) && cents > 0 ? cents : null;
+}
+
 export default function CashInScreen() {
   const [retailer, setRetailer] = useState<(typeof retailers)[number]>("Shoprite");
   const [amountText, setAmountText] = useState("200.00");
   const [copied, setCopied] = useState(false);
-  const amount = Number(amountText.replace(",", "."));
-  const validAmount = Number.isFinite(amount) && amount > 0;
-  const fee = validAmount ? amount * 0.01 : 0;
+  const amountCents = parseAmountToCents(amountText);
+  const feeCents = amountCents === null ? 0 : Math.round(amountCents * 0.01);
 
   const copyReference = async () => {
     try {
@@ -96,18 +103,22 @@ export default function CashInScreen() {
             />
             <Text style={styles.currencyCode}>ZAR</Text>
           </View>
-          {!validAmount ? <Text style={styles.validation}>Enter an amount greater than zero.</Text> : null}
+          {amountCents === null ? (
+            <Text style={styles.validation}>
+              Enter an amount greater than zero using a decimal point and up to two decimal places (for example, 1234.56). Do not use grouping separators.
+            </Text>
+          ) : null}
           <View style={styles.breakdownRow}>
             <Text style={styles.breakdownLabel}>Cash handed over</Text>
-            <Text style={styles.breakdownValue}>{validAmount ? formatAmount(amount) : "—"}</Text>
+            <Text style={styles.breakdownValue}>{amountCents !== null ? formatAmount(amountCents / 100) : "—"}</Text>
           </View>
           <View style={styles.breakdownRow}>
             <Text style={styles.breakdownLabel}>Illustrative fee (1%)</Text>
-            <Text style={styles.breakdownValue}>{validAmount ? formatAmount(fee) : "—"}</Text>
+            <Text style={styles.breakdownValue}>{amountCents !== null ? formatAmount(feeCents / 100) : "—"}</Text>
           </View>
           <View style={styles.breakdownRow}>
             <Text style={styles.resultLabel}>Added to your sample wallet</Text>
-            <Text style={styles.resultValue}>{validAmount ? formatAmount(amount - fee) : "—"}</Text>
+            <Text style={styles.resultValue}>{amountCents !== null ? formatAmount((amountCents - feeCents) / 100) : "—"}</Text>
           </View>
           <Text style={styles.smallNote}>Demo pricing only, not a real fee quote.</Text>
         </View>
